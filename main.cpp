@@ -20,110 +20,102 @@ void afiseazaMeniu() {
 
 int main() {
     CentruAfterschool centrulMeu("Lumea Copiilor");
-    int optiune = -1;
+    int optiune = -1; // FIX: Initializare
 
     while (true) {
         try {
             afiseazaMeniu();
-            if (!(std::cin >> optiune)) break;
+            if (!(std::cin >> optiune)) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                break;
+            }
             std::cout << optiune << std::endl;
 
             if (optiune == 0) break;
 
             if (optiune == 1) {
-                std::string nume; int varsta;
+                std::string nume;
+                int varsta = 0; // FIX: Initializare obligatorie
+
                 std::cout << "Nume: "; std::cin >> std::ws; std::getline(std::cin, nume);
                 std::cout << "[" << nume << "]" << std::endl;
 
-                std::cout << "Varsta: ";
-                if (!(std::cin >> varsta)) {
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    continue;
-                }
+                std::cout << "Varsta: "; std::cin >> varsta;
                 std::cout << "[" << varsta << "]" << std::endl;
 
-                // CONSTRUCȚIE SIGURĂ:
-                // Cream obiectul separat. Daca varsta e 4, constructorul arunca exceptia AICI.
-                // Programul sare direct la block-ul catch de jos si NU mai intra in adaugaCopil.
-                Copil copilNou(nume, varsta);
+                try {
+                    // Chiar daca varsta e 0 (input esuat), constructorul va arunca exceptie sigur, fara crash MSAN
+                    Copil c(nume, varsta);
+                    centrulMeu.adaugaCopil(c);
+                    std::cout << ">>> Succes: " << nume << " a fost adaugat. In sistem sunt: "
+                              << centrulMeu.getNrCopii() << " copii." << std::endl;
+                } catch (const EroareVarsta& e) {
+                    std::cout << "\n[NOTIFICARE]: Operatiune anulata din motive de validare." << std::endl;
+                    std::cerr << "DETALII EROARE: " << e.what() << std::endl;
+                }
+            }
+            else if (optiune == 2) {
+                // FIX: Initializare la toate variabilele
+                int idx = -1;
+                int tip = 0;
 
-                // Daca am ajuns aici, inseamna ca obiectul e valid
-                centrulMeu.adaugaCopil(copilNou);
-
-                std::cout << ">>> Succes: " << copilNou.getNume() << " a fost adaugat. In sistem sunt acum "
-                          << centrulMeu.getNrCopii() << " copii." << std::endl;
-            } else if (optiune == 2) {
-                int idx, tip;
                 std::cout << "Index copil: "; std::cin >> idx; std::cout << idx << std::endl;
 
-                // Verificăm indexul înainte de a cere restul datelor
-                if (idx < 0 || idx >= centrulMeu.getNrCopii()) {
-                    throw EroareIndex();
-                }
+                if (idx < 0 || idx >= centrulMeu.getNrCopii()) throw EroareIndex();
 
                 std::cout << "Tip (1-Sport, 2-Arta, 3-Edu): "; std::cin >> tip; std::cout << tip << std::endl;
 
-                std::string numAct; double pret; int start, final;
+                std::string numAct;
+                double pret = 0.0;
+                int start = 0, final = 0;
+
                 std::cout << "Denumire: "; std::cin >> std::ws; std::getline(std::cin, numAct);
-                std::cout << "[" << numAct << "]" << std::endl;
-                std::cout << "Pret/Start/Final: "; std::cin >> pret >> start >> final;
+                std::cout << "[" << numAct << "]\nPret/Start/Final: ";
+                std::cin >> pret >> start >> final;
                 std::cout << pret << " " << start << " " << final << std::endl;
 
-                // Creăm pointerul SMART separat
                 std::unique_ptr<Activitate> noua;
                 if (tip == 1) {
-                    int echip;
-                    std::cout << "Echipament (1-Da, 0-Nu): "; std::cin >> echip; std::cout << echip << std::endl;
+                    int echip = 0; // FIX
+                    std::cout << "Echipament: "; std::cin >> echip; std::cout << echip << std::endl;
                     noua = std::make_unique<ActivitateSportiva>(numAct, pret, IntervalOrar(start, final), echip == 1);
                 } else if (tip == 2) {
-                    int creativ;
-                    std::cout << "Creativitate: "; std::cin >> creativ; std::cout << creativ << std::endl;
-                    noua = std::make_unique<ActivitateArtistica>(numAct, pret, IntervalOrar(start, final), creativ);
-                } else if (tip == 3) {
-                    int mat;
+                    int cr = 0; // FIX
+                    std::cout << "Creativitate: "; std::cin >> cr; std::cout << cr << std::endl;
+                    noua = std::make_unique<ActivitateArtistica>(numAct, pret, IntervalOrar(start, final), cr);
+                } else {
+                    int mat = 0; // FIX
                     std::cout << "Materiale: "; std::cin >> mat; std::cout << mat << std::endl;
                     noua = std::make_unique<ActivitateEducationala>(numAct, pret, IntervalOrar(start, final), mat);
-                } else {
-                    throw EroareAfterschool("Tip activitate invalid!");
                 }
 
-                // Abia acum trimitem obiectul către centru
                 centrulMeu.inscrieCopilLaActivitate(idx, std::move(noua));
-
-                // Confirmare folosind getterele pentru a curăța Cppcheck
-                std::cout << ">>> Confirmare: " << centrulMeu.getCopil(idx).getNume() << " a fost inscris." << std::endl;
-
+                std::cout << ">>> Confirmare: Inscris cu succes." << std::endl;
                 centrulMeu.verificaPromotieSport(idx);
-            } else if (optiune == 3) {
+            }
+            else if (optiune == 3) {
                 centrulMeu.genereazaRaport(1000.0);
-                std::cout << "Total activitati procesate (Static): " << CentruAfterschool::getNrTotal() << std::endl;
-
-            } else if (optiune == 4) {
-                int idx;
+                std::cout << "Total activitati (Static): " << CentruAfterschool::getNrTotal() << std::endl;
+            }
+            else if (optiune == 4) {
+                int idx = -1; // FIX
                 std::cout << "Index de sters: "; std::cin >> idx; std::cout << idx << std::endl;
                 centrulMeu.stergeCopil(idx);
             }
         }
         catch (const EroareAfterschool& e) {
-            // 1. Mesaj pe cout (apare imediat în fluxul alb de text)
             std::cout << "\n[NOTIFICARE]: A aparut o problema la procesare..." << std::endl;
-
-            // 2. Mesaj pe cerr (apare cu rosu, tehnic e fluxul de eroare)
             std::cerr << "DETALII EROARE: " << e.what() << std::endl;
-
-            // 3. Sincronizam fluxul de citire (ignoram restul datelor invalide)
+            // Curatam buffer-ul pentru a nu intra in bucla infinita
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
         catch (const std::exception& e) {
-            std::cout << "\n[SISTEM]: Eroare critica de sistem!" << std::endl;
-            std::cerr << "MESAJ: " << e.what() << std::endl;
-
+            std::cerr << "!!! Eroare sistem: " << e.what() << std::endl;
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
-    std::cout << "--- Executie finalizata ---" << std::endl;
     return 0;
 }

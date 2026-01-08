@@ -7,14 +7,19 @@
 
 #include <vector>
 #include <memory>
+#include <string>
+#include <iostream>
 #include "Activitate.h"
 
 class Copil {
     std::string nume;
     int varsta;
     std::vector<std::unique_ptr<Activitate>> activitati;
-    double* istoricPlati;
-    int nrLuni;
+
+    // FIX MSAN: Initializare implicita pentru a evita garbage value la constructie esuata
+    double* istoricPlati = nullptr;
+    int nrLuni = 0;
+
 public:
     Copil(std::string nume, int varsta);
     Copil(const Copil& altul);

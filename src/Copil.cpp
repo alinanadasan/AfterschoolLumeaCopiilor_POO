@@ -6,9 +6,12 @@
 #include "ExceptiiAfterschool.h"
 #include <algorithm>
 
-Copil::Copil(std::string n, int v) : nume(std::move(n)), varsta(v), nrLuni(1) {
+// FIX MSAN: istoricPlati(nullptr) in lista de initializare
+Copil::Copil(std::string n, int v)
+    : nume(std::move(n)), varsta(v), nrLuni(1), istoricPlati(nullptr) {
+
     if (v < 5 || v > 18) {
-        istoricPlati = nullptr;
+        // Nu mai e nevoie sa setam manual istoricPlati = nullptr, e deja setat din lista
         throw EroareVarsta();
     }
     istoricPlati = new double[1]{0.0};
