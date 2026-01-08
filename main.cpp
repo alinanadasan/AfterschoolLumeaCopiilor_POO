@@ -23,6 +23,7 @@ int main() {
     int optiune = -1;
 
     while (true) {
+        // Bloc try-catch ramas doar pentru siguranta extrema, dar vom evita throw-urile manual
         try {
             afiseazaMeniu();
             if (!(std::cin >> optiune)) {
@@ -44,18 +45,16 @@ int main() {
                 std::cout << "Varsta: "; std::cin >> varsta;
                 std::cout << "[" << varsta << "]" << std::endl;
 
-                // FIX MSAN CRASH: Validam aici pentru a evita 'throw' din constructor care cauzeaza stack-overflow in MSAN
+                // VALIDARE LOCALĂ (evita throw EroareVarsta)
                 if (varsta < 5 || varsta > 18) {
-                    std::cout << "\n[NOTIFICARE]: Operatiune anulata. Varsta invalida (trebuie 5-18 ani)." << std::endl;
-                    continue; // Sarim peste crearea obiectului
+                    std::cout << "\n[EROARE]: Varsta invalida (trebuie 5-18 ani)! Operatiune anulata." << std::endl;
+                    continue;
                 }
 
                 Copil c(nume, varsta);
                 centrulMeu.adaugaCopil(c);
 
-                // FIX STYLE: Folosim getNume() pentru a elimina avertismentul "unused function"
-                // Deoarece adaugaCopil primeste const reference, facem o copie locala sau accesam ultimul element
-                // Aici accesam ultimul copil adaugat pentru confirmare
+                // Confirmare
                 if(centrulMeu.getNrCopii() > 0) {
                      std::cout << ">>> Succes: " << centrulMeu.getCopil(centrulMeu.getNrCopii()-1).getNume()
                                << " a fost adaugat. In sistem sunt: "
@@ -68,7 +67,11 @@ int main() {
 
                 std::cout << "Index copil: "; std::cin >> idx; std::cout << idx << std::endl;
 
-                if (idx < 0 || idx >= centrulMeu.getNrCopii()) throw EroareIndex();
+                // VALIDARE LOCALĂ (evita throw EroareIndex)
+                if (idx < 0 || idx >= centrulMeu.getNrCopii()) {
+                    std::cout << "\n[EROARE]: Index invalid! Operatiune anulata." << std::endl;
+                    continue;
+                }
 
                 std::cout << "Tip (1-Sport, 2-Arta, 3-Edu): "; std::cin >> tip; std::cout << tip << std::endl;
 
@@ -96,6 +99,14 @@ int main() {
                     noua = std::make_unique<ActivitateEducationala>(numAct, pret, IntervalOrar(start, final), mat);
                 }
 
+                // VALIDARE LOCALĂ CONFLICT (evita throw EroareConflictOrar)
+                // Verificam manual daca exista conflict inainte de a apela functia din Centru
+                if (centrulMeu.getCopil(idx).areConflictOrar(*noua)) {
+                    std::cout << "\n[EROARE]: Conflict orar detectat pentru activitatea " << numAct << "! Operatiune anulata." << std::endl;
+                    continue;
+                }
+
+                // Acum apelul este sigur, nu va arunca exceptie
                 centrulMeu.inscrieCopilLaActivitate(idx, std::move(noua));
                 std::cout << ">>> Confirmare: Inscris cu succes." << std::endl;
                 centrulMeu.verificaPromotieSport(idx);
@@ -108,21 +119,19 @@ int main() {
                 int idx = -1;
                 std::cout << "Index de sters: "; std::cin >> idx; std::cout << idx << std::endl;
 
-                // Verificare inainte de stergere
-                if (idx >= 0 && idx < centrulMeu.getNrCopii()) {
-                    // FIX STYLE: Folosim getCopil inainte de a sterge, doar ca sa folosim functia
-                    std::cout << "Se sterge copilul: " << centrulMeu.getCopil(idx).getNume() << std::endl;
+                // VALIDARE LOCALĂ
+                if (idx < 0 || idx >= centrulMeu.getNrCopii()) {
+                    std::cout << "\n[EROARE]: Index invalid! Nu se poate sterge." << std::endl;
+                    continue;
                 }
+
+                std::cout << "Se sterge copilul: " << centrulMeu.getCopil(idx).getNume() << std::endl;
                 centrulMeu.stergeCopil(idx);
             }
         }
-        catch (const EroareAfterschool& e) {
-            std::cout << "\n[NOTIFICARE]: A aparut o problema la procesare..." << std::endl;
-            std::cerr << "DETALII EROARE: " << e.what() << std::endl;
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
         catch (const std::exception& e) {
+            // Acest catch ramane doar pentru erori neprevazute (bad_alloc, etc)
+            // Dar logica principala e protejata de if-uri.
             std::cerr << "!!! Eroare sistem: " << e.what() << std::endl;
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
