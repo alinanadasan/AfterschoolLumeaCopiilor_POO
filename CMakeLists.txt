@@ -65,6 +65,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/ActivitateArtistica.cpp
         src/ActivitateEducationala.cpp
         include/ExceptiiAfterschool.h
+        include/ActivitateExcursie.h
+        src/ActivitateExcursie.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

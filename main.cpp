@@ -6,6 +6,7 @@
 #include "ActivitateSportiva.h"
 #include "ActivitateArtistica.h"
 #include "ActivitateEducationala.h"
+#include "ActivitateExcursie.h" // <--- 1. Include nou
 #include "ExceptiiAfterschool.h"
 
 void afiseazaMeniu() {
@@ -73,7 +74,10 @@ int main() {
                     continue;
                 }
 
-                std::cout << "Tip (1-Sport, 2-Arta, 3-Edu): "; std::cin >> tip; std::cout << tip << std::endl;
+                // <--- 2. Meniu actualizat
+                std::cout << "Tip (1-Sport, 2-Arta, 3-Edu, 4-Excursie): ";
+                std::cin >> tip;
+                std::cout << tip << std::endl;
 
                 std::string numAct;
                 double pret = 0.0;
@@ -85,6 +89,7 @@ int main() {
                 std::cout << pret << " " << start << " " << final << std::endl;
 
                 std::unique_ptr<Activitate> noua;
+
                 if (tip == 1) {
                     int echip = 0;
                     std::cout << "Echipament: "; std::cin >> echip; std::cout << echip << std::endl;
@@ -93,10 +98,17 @@ int main() {
                     int cr = 0;
                     std::cout << "Creativitate: "; std::cin >> cr; std::cout << cr << std::endl;
                     noua = std::make_unique<ActivitateArtistica>(numAct, pret, IntervalOrar(start, final), cr);
-                } else {
+                } else if (tip == 3) { // Modificat din 'else' in 'else if'
                     int mat = 0;
                     std::cout << "Materiale: "; std::cin >> mat; std::cout << mat << std::endl;
                     noua = std::make_unique<ActivitateEducationala>(numAct, pret, IntervalOrar(start, final), mat);
+                } else if (tip == 4) { // <--- 3. Logica noua pentru Excursie
+                    int dist = 0;
+                    std::cout << "Distanta (km): "; std::cin >> dist; std::cout << dist << std::endl;
+                    noua = std::make_unique<ActivitateExcursie>(numAct, pret, IntervalOrar(start, final), dist);
+                } else {
+                    std::cout << "\n[EROARE]: Tip activitate invalid!" << std::endl;
+                    continue;
                 }
 
                 // VALIDARE LOCALĂ CONFLICT (evita throw EroareConflictOrar)
