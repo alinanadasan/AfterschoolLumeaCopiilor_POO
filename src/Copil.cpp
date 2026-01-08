@@ -7,7 +7,10 @@
 #include <algorithm>
 
 Copil::Copil(std::string n, int v) : nume(std::move(n)), varsta(v), nrLuni(1) {
-    if (v < 5 || v > 18) throw EroareVarsta();
+    if (v < 5 || v > 18) {
+        istoricPlati = nullptr;
+        throw EroareVarsta();
+    }
     istoricPlati = new double[1]{0.0};
 }
 
@@ -31,7 +34,12 @@ Copil& Copil::operator=(Copil altul) {
     return *this;
 }
 
-Copil::~Copil() { delete[] istoricPlati; }
+Copil::~Copil() {
+    if (istoricPlati != nullptr) {
+        delete[] istoricPlati;
+        istoricPlati = nullptr;
+    }
+}
 
 void Copil::adaugaActivitate(std::unique_ptr<Activitate> a) { activitati.push_back(std::move(a)); }
 

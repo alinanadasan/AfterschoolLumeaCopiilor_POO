@@ -43,24 +43,34 @@ int main() {
                 }
                 std::cout << "[" << varsta << "]" << std::endl;
 
-                // Aceasta linie arunca EroareVarsta daca varsta nu e intre 5-18
-                centrulMeu.adaugaCopil(Copil(nume, varsta));
-                std::cout << ">>> Succes: Copil adaugat. In sistem sunt acum "
-                << centrulMeu.getNrCopii() << " copii." << std::endl;
+                // CONSTRUCȚIE SIGURĂ:
+                // Cream obiectul separat. Daca varsta e 4, constructorul arunca exceptia AICI.
+                // Programul sare direct la block-ul catch de jos si NU mai intra in adaugaCopil.
+                Copil copilNou(nume, varsta);
 
+                // Daca am ajuns aici, inseamna ca obiectul e valid
+                centrulMeu.adaugaCopil(copilNou);
+
+                std::cout << ">>> Succes: " << copilNou.getNume() << " a fost adaugat. In sistem sunt acum "
+                          << centrulMeu.getNrCopii() << " copii." << std::endl;
             } else if (optiune == 2) {
                 int idx, tip;
                 std::cout << "Index copil: "; std::cin >> idx; std::cout << idx << std::endl;
+
+                // Verificăm indexul înainte de a cere restul datelor
+                if (idx < 0 || idx >= centrulMeu.getNrCopii()) {
+                    throw EroareIndex();
+                }
+
                 std::cout << "Tip (1-Sport, 2-Arta, 3-Edu): "; std::cin >> tip; std::cout << tip << std::endl;
 
                 std::string numAct; double pret; int start, final;
                 std::cout << "Denumire: "; std::cin >> std::ws; std::getline(std::cin, numAct);
                 std::cout << "[" << numAct << "]" << std::endl;
+                std::cout << "Pret/Start/Final: "; std::cin >> pret >> start >> final;
+                std::cout << pret << " " << start << " " << final << std::endl;
 
-                std::cout << "Pret: "; std::cin >> pret; std::cout << pret << std::endl;
-                std::cout << "Ora start: "; std::cin >> start; std::cout << start << std::endl;
-                std::cout << "Ora final: "; std::cin >> final; std::cout << final << std::endl;
-
+                // Creăm pointerul SMART separat
                 std::unique_ptr<Activitate> noua;
                 if (tip == 1) {
                     int echip;
@@ -68,26 +78,23 @@ int main() {
                     noua = std::make_unique<ActivitateSportiva>(numAct, pret, IntervalOrar(start, final), echip == 1);
                 } else if (tip == 2) {
                     int creativ;
-                    std::cout << "Nivel creativitate: "; std::cin >> creativ; std::cout << creativ << std::endl;
+                    std::cout << "Creativitate: "; std::cin >> creativ; std::cout << creativ << std::endl;
                     noua = std::make_unique<ActivitateArtistica>(numAct, pret, IntervalOrar(start, final), creativ);
                 } else if (tip == 3) {
-                    int materiale;
-                    std::cout << "Nr materiale: "; std::cin >> materiale; std::cout << materiale << std::endl;
-                    noua = std::make_unique<ActivitateEducationala>(numAct, pret, IntervalOrar(start, final), materiale);
+                    int mat;
+                    std::cout << "Materiale: "; std::cin >> mat; std::cout << mat << std::endl;
+                    noua = std::make_unique<ActivitateEducationala>(numAct, pret, IntervalOrar(start, final), mat);
                 } else {
-                    std::cout << "!!! Tip invalid!" << std::endl;
-                    continue;
+                    throw EroareAfterschool("Tip activitate invalid!");
                 }
 
-                // Poate arunca EroareIndex sau EroareConflictOrar
+                // Abia acum trimitem obiectul către centru
                 centrulMeu.inscrieCopilLaActivitate(idx, std::move(noua));
-                // FOLOSIM getCopil si getNume pentru confirmare
-                std::cout << ">>> Confirmare: Copilul " << centrulMeu.getCopil(idx).getNume()
-                          << " a fost inscris cu succes." << std::endl;
 
-                // Testare dynamic_cast (downcast cu sens)
+                // Confirmare folosind getterele pentru a curăța Cppcheck
+                std::cout << ">>> Confirmare: " << centrulMeu.getCopil(idx).getNume() << " a fost inscris." << std::endl;
+
                 centrulMeu.verificaPromotieSport(idx);
-
             } else if (optiune == 3) {
                 centrulMeu.genereazaRaport(1000.0);
                 std::cout << "Total activitati procesate (Static): " << CentruAfterschool::getNrTotal() << std::endl;
