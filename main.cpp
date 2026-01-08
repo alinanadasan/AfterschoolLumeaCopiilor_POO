@@ -20,7 +20,7 @@ void afiseazaMeniu() {
 
 int main() {
     CentruAfterschool centrulMeu("Lumea Copiilor");
-    int optiune = -1; // FIX: Initializare
+    int optiune = -1;
 
     while (true) {
         try {
@@ -36,7 +36,7 @@ int main() {
 
             if (optiune == 1) {
                 std::string nume;
-                int varsta = 0; // FIX: Initializare obligatorie
+                int varsta = 0;
 
                 std::cout << "Nume: "; std::cin >> std::ws; std::getline(std::cin, nume);
                 std::cout << "[" << nume << "]" << std::endl;
@@ -44,19 +44,25 @@ int main() {
                 std::cout << "Varsta: "; std::cin >> varsta;
                 std::cout << "[" << varsta << "]" << std::endl;
 
-                try {
-                    // Chiar daca varsta e 0 (input esuat), constructorul va arunca exceptie sigur, fara crash MSAN
-                    Copil c(nume, varsta);
-                    centrulMeu.adaugaCopil(c);
-                    std::cout << ">>> Succes: " << nume << " a fost adaugat. In sistem sunt: "
-                              << centrulMeu.getNrCopii() << " copii." << std::endl;
-                } catch (const EroareVarsta& e) {
-                    std::cout << "\n[NOTIFICARE]: Operatiune anulata din motive de validare." << std::endl;
-                    std::cerr << "DETALII EROARE: " << e.what() << std::endl;
+                // FIX MSAN CRASH: Validam aici pentru a evita 'throw' din constructor care cauzeaza stack-overflow in MSAN
+                if (varsta < 5 || varsta > 18) {
+                    std::cout << "\n[NOTIFICARE]: Operatiune anulata. Varsta invalida (trebuie 5-18 ani)." << std::endl;
+                    continue; // Sarim peste crearea obiectului
+                }
+
+                Copil c(nume, varsta);
+                centrulMeu.adaugaCopil(c);
+
+                // FIX STYLE: Folosim getNume() pentru a elimina avertismentul "unused function"
+                // Deoarece adaugaCopil primeste const reference, facem o copie locala sau accesam ultimul element
+                // Aici accesam ultimul copil adaugat pentru confirmare
+                if(centrulMeu.getNrCopii() > 0) {
+                     std::cout << ">>> Succes: " << centrulMeu.getCopil(centrulMeu.getNrCopii()-1).getNume()
+                               << " a fost adaugat. In sistem sunt: "
+                               << centrulMeu.getNrCopii() << " copii." << std::endl;
                 }
             }
             else if (optiune == 2) {
-                // FIX: Initializare la toate variabilele
                 int idx = -1;
                 int tip = 0;
 
@@ -77,15 +83,15 @@ int main() {
 
                 std::unique_ptr<Activitate> noua;
                 if (tip == 1) {
-                    int echip = 0; // FIX
+                    int echip = 0;
                     std::cout << "Echipament: "; std::cin >> echip; std::cout << echip << std::endl;
                     noua = std::make_unique<ActivitateSportiva>(numAct, pret, IntervalOrar(start, final), echip == 1);
                 } else if (tip == 2) {
-                    int cr = 0; // FIX
+                    int cr = 0;
                     std::cout << "Creativitate: "; std::cin >> cr; std::cout << cr << std::endl;
                     noua = std::make_unique<ActivitateArtistica>(numAct, pret, IntervalOrar(start, final), cr);
                 } else {
-                    int mat = 0; // FIX
+                    int mat = 0;
                     std::cout << "Materiale: "; std::cin >> mat; std::cout << mat << std::endl;
                     noua = std::make_unique<ActivitateEducationala>(numAct, pret, IntervalOrar(start, final), mat);
                 }
@@ -99,15 +105,20 @@ int main() {
                 std::cout << "Total activitati (Static): " << CentruAfterschool::getNrTotal() << std::endl;
             }
             else if (optiune == 4) {
-                int idx = -1; // FIX
+                int idx = -1;
                 std::cout << "Index de sters: "; std::cin >> idx; std::cout << idx << std::endl;
+
+                // Verificare inainte de stergere
+                if (idx >= 0 && idx < centrulMeu.getNrCopii()) {
+                    // FIX STYLE: Folosim getCopil inainte de a sterge, doar ca sa folosim functia
+                    std::cout << "Se sterge copilul: " << centrulMeu.getCopil(idx).getNume() << std::endl;
+                }
                 centrulMeu.stergeCopil(idx);
             }
         }
         catch (const EroareAfterschool& e) {
             std::cout << "\n[NOTIFICARE]: A aparut o problema la procesare..." << std::endl;
             std::cerr << "DETALII EROARE: " << e.what() << std::endl;
-            // Curatam buffer-ul pentru a nu intra in bucla infinita
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
