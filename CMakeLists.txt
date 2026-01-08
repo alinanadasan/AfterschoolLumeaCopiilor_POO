@@ -50,6 +50,14 @@ include(cmake/CopyHelper.cmake)
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
     main.cpp
+        include/IntervalOrar.h
+        include/Activitate.h
+        include/Copil.h
+        include/CentruAfterschool.h
+        src/IntervalOrar.cpp
+        src/Activitate.cpp
+        src/Copil.cpp
+        src/CentruAfterschool.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
@@ -66,6 +74,7 @@ set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 # target_include_directories(${MAIN_EXECUTABLE_NAME} SYSTEM PRIVATE ${<SomeLib>_SOURCE_DIR}/include)
 # target_link_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${<SomeLib>_BINARY_DIR}/lib)
 # target_link_libraries(${MAIN_EXECUTABLE_NAME} <SomeLib>)
+target_include_directories(${MAIN_EXECUTABLE_NAME} PRIVATE include)
 
 ###############################################################################
 
