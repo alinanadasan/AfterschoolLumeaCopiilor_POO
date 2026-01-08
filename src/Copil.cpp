@@ -3,41 +3,50 @@
 //
 
 #include "Copil.h"
-#include <iostream>
+#include "ExceptiiAfterschool.h"
+#include <algorithm>
 
-Copil::Copil(std::string nume, int varsta) : nume(nume), varsta(varsta), nrLuni(1) {
+Copil::Copil(std::string n, int v) : nume(std::move(n)), varsta(v), nrLuni(1) {
+    if (v < 5 || v > 18) throw EroareVarsta();
     istoricPlati = new double[1]{0.0};
 }
-Copil::Copil(const Copil& altul) : nume(altul.nume), varsta(altul.varsta),
-                                   activitati(altul.activitati), nrLuni(altul.nrLuni) {
+
+Copil::Copil(const Copil& altul) : nume(altul.nume), varsta(altul.varsta), nrLuni(altul.nrLuni) {
     istoricPlati = new double[nrLuni];
     for(int i=0; i<nrLuni; ++i) istoricPlati[i] = altul.istoricPlati[i];
+    for(const auto& a : altul.activitati) activitati.push_back(a->clone());
 }
-Copil& Copil::operator=(const Copil& altul) {
-    if(this != &altul) {
-        delete[] istoricPlati;
-        nume = altul.nume; varsta = altul.varsta; activitati = altul.activitati; nrLuni = altul.nrLuni;
-        istoricPlati = new double[nrLuni];
-        for(int i=0; i<nrLuni; ++i) istoricPlati[i] = altul.istoricPlati[i];
-    }
+
+void swap(Copil& primu, Copil& aldoilea) noexcept {
+    using std::swap;
+    swap(primu.nume, aldoilea.nume);
+    swap(primu.varsta, aldoilea.varsta);
+    swap(primu.istoricPlati, aldoilea.istoricPlati);
+    swap(primu.nrLuni, aldoilea.nrLuni);
+    swap(primu.activitati, aldoilea.activitati);
+}
+
+Copil& Copil::operator=(Copil altul) {
+    swap(*this, altul);
     return *this;
 }
+
 Copil::~Copil() { delete[] istoricPlati; }
-void Copil::adaugaActivitate(const Activitate& a) { activitati.push_back(a); }
+
+void Copil::adaugaActivitate(std::unique_ptr<Activitate> a) { activitati.push_back(std::move(a)); }
+
 bool Copil::areConflictOrar(const Activitate& noua) const {
-    for(const auto& act : activitati)
-        if(act.getInterval().getStart() < noua.getInterval().getFinal() &&
-           act.getInterval().getFinal() > noua.getInterval().getStart()) return true;
+    for(const auto& a : activitati)
+        if(a->getInterval().getStart() < noua.getInterval().getFinal() && a->getInterval().getFinal() > noua.getInterval().getStart()) return true;
     return false;
 }
-double Copil::calculTaxa(double taxaBaza) const {
-    double total = taxaBaza;
-    for(const auto& act : activitati) total += act.getPret();
-    return (activitati.size() >= 2) ? total * 0.9 : total;
+
+double Copil::calculTaxa(double b) const {
+    double t = b;
+    for(const auto& a : activitati) t += a->getPretCalculat();
+    return (activitati.size() >= 2) ? t * 0.9 : t;
 }
-const std::string& Copil::getNume() const {
-    return nume;
-}
+
 std::ostream& operator<<(std::ostream& os, const Copil& c) {
     os << "Copil: " << c.nume << " (" << c.varsta << " ani)";
     return os;

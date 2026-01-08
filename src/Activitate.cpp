@@ -4,13 +4,17 @@
 
 #include "Activitate.h"
 Activitate::Activitate(std::string nume, double pret, IntervalOrar inter)
-    : denumire(nume), pretExtra(pret), interval(inter) {}
-const std::string& Activitate::getDenumire() const {
-    return denumire;
+    : denumire(std::move(nume)), pretExtra(pret), interval(inter) {}
+
+void Activitate::afiseazaDetalii(std::ostream& os) const { print(os); }
+
+void Activitate::print(std::ostream& os) const {
+    os << "Activitate: " << denumire << " | Pret: " << getPretCalculat() << " RON | " << interval;
 }
-double Activitate::getPret() const { return pretExtra; }
-IntervalOrar Activitate::getInterval() const { return interval; }
+
 std::ostream& operator<<(std::ostream& os, const Activitate& a) {
-    os << "Activitate: " << a.denumire << " | Pret: " << a.pretExtra << " RON | " << a.interval;
+    a.afiseazaDetalii(os);
     return os;
 }
+const std::string& Activitate::getDenumire() const { return denumire; }
+IntervalOrar Activitate::getInterval() const { return interval; }

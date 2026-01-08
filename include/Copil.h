@@ -5,26 +5,28 @@
 #ifndef OOP_COPIL_H
 #define OOP_COPIL_H
 
-#include <string>
 #include <vector>
+#include <memory>
 #include "Activitate.h"
 
 class Copil {
     std::string nume;
     int varsta;
-    std::vector<Activitate> activitati;
+    std::vector<std::unique_ptr<Activitate>> activitati;
     double* istoricPlati;
     int nrLuni;
 public:
     Copil(std::string nume, int varsta);
     Copil(const Copil& altul);
-    Copil& operator=(const Copil& altul);
+    Copil& operator=(Copil altul); // Copy-and-swap
     ~Copil();
+    friend void swap(Copil& primu, Copil& aldoilea) noexcept;
 
-    void adaugaActivitate(const Activitate& a);
+    void adaugaActivitate(std::unique_ptr<Activitate> a);
     bool areConflictOrar(const Activitate& noua) const;
     double calculTaxa(double taxaBaza) const;
-    const std::string& getNume() const;
+    const std::string& getNume() const { return nume; }
+    const std::vector<std::unique_ptr<Activitate>>& getActivitati() const { return activitati; }
     friend std::ostream& operator<<(std::ostream& os, const Copil& c);
 };
 
