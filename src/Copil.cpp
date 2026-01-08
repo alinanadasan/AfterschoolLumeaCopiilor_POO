@@ -6,14 +6,15 @@
 #include "ExceptiiAfterschool.h"
 #include <algorithm>
 
-// FIX MSAN: istoricPlati(nullptr) in lista de initializare
+// FIX COMPILARE: Ordinea din lista de initializare trebuie sa fie identica cu cea din .h
+// Ordinea in .h: nume, varsta, activitati, istoricPlati, nrLuni
 Copil::Copil(std::string n, int v)
-    : nume(std::move(n)), varsta(v), nrLuni(1), istoricPlati(nullptr) {
+    : nume(std::move(n)), varsta(v), istoricPlati(nullptr), nrLuni(1) {
 
     if (v < 5 || v > 18) {
-        // Nu mai e nevoie sa setam manual istoricPlati = nullptr, e deja setat din lista
         throw EroareVarsta();
     }
+    // Alocam memoria doar daca varsta e valida
     istoricPlati = new double[1]{0.0};
 }
 
