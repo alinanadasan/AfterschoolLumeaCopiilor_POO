@@ -32,7 +32,7 @@ void CentruAfterschool::verificaPromotieSport(int idx) const {
     if (idx < 0 || idx >= (int)listaCopii.size()) return;
 
     for (const auto& a : listaCopii[idx].getActivitati()) {
-        auto sport = dynamic_cast<ActivitateSportiva*>(a.get());
+        auto const* sport = dynamic_cast<ActivitateSportiva*>(a.get());
         if (sport && sport->areEchipament()) {
             std::cout << "[DYNAMIC CAST] Voucher acordat pentru " << sport->getDenumire() << "\n";
         }

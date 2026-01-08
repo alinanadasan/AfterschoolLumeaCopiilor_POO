@@ -45,7 +45,8 @@ int main() {
 
                 // Aceasta linie arunca EroareVarsta daca varsta nu e intre 5-18
                 centrulMeu.adaugaCopil(Copil(nume, varsta));
-                std::cout << ">>> Succes: Copil adaugat." << std::endl;
+                std::cout << ">>> Succes: Copil adaugat. In sistem sunt acum "
+                << centrulMeu.getNrCopii() << " copii." << std::endl;
 
             } else if (optiune == 2) {
                 int idx, tip;
@@ -80,6 +81,9 @@ int main() {
 
                 // Poate arunca EroareIndex sau EroareConflictOrar
                 centrulMeu.inscrieCopilLaActivitate(idx, std::move(noua));
+                // FOLOSIM getCopil si getNume pentru confirmare
+                std::cout << ">>> Confirmare: Copilul " << centrulMeu.getCopil(idx).getNume()
+                          << " a fost inscris cu succes." << std::endl;
 
                 // Testare dynamic_cast (downcast cu sens)
                 centrulMeu.verificaPromotieSport(idx);
