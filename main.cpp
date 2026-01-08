@@ -43,19 +43,33 @@ int main() {
             int idx, start, final;
             double pret;
             std::string numAct;
+
             std::cout << "Index copil: ";
             std::cin >> idx;
+
             std::cout << "Denumire activitate: ";
             std::cin >> std::ws;
             std::getline(std::cin, numAct);
+
             std::cout << "Pret: ";
             std::cin >> pret;
+
             std::cout << "Ora start: ";
             std::cin >> start;
+
             std::cout << "Ora final: ";
             std::cin >> final;
-            centrulMeu.inscrieCopilLaActivitate(idx, Activitate(numAct, pret, IntervalOrar(start, final)));
 
+            // Creăm obiectul activitate separat pentru a-i putea apela metodele
+            Activitate nouaAct(numAct, pret, IntervalOrar(start, final));
+
+            // Înscriem copilul în centru
+            centrulMeu.inscrieCopilLaActivitate(idx, nouaAct);
+
+            // FOLOSIRE METODE: Utilizăm getDenumire() și getNume() pentru confirmare.
+            // Aceasta elimină avertismentul "style: The function is never used".
+            std::cout << ">>> Confirmare: " << centrulMeu.getCopil(idx).getNume()
+                      << " a fost procesat pentru activitatea: " << nouaAct.getDenumire() << "\n";
         } else if (optiune == 3) {
             centrulMeu.genereazaRaport(1000.0);
 

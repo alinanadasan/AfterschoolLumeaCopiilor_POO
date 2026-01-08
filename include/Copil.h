@@ -24,7 +24,7 @@ public:
     void adaugaActivitate(const Activitate& a);
     bool areConflictOrar(const Activitate& noua) const;
     double calculTaxa(double taxaBaza) const;
-    std::string getNume() const;
+    const std::string& getNume() const;
     friend std::ostream& operator<<(std::ostream& os, const Copil& c);
 };
 

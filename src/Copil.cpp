@@ -35,7 +35,9 @@ double Copil::calculTaxa(double taxaBaza) const {
     for(const auto& act : activitati) total += act.getPret();
     return (activitati.size() >= 2) ? total * 0.9 : total;
 }
-std::string Copil::getNume() const { return nume; }
+const std::string& Copil::getNume() const {
+    return nume;
+}
 std::ostream& operator<<(std::ostream& os, const Copil& c) {
     os << "Copil: " << c.nume << " (" << c.varsta << " ani)";
     return os;

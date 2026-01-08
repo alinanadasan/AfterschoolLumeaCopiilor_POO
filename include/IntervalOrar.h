@@ -10,7 +10,8 @@
 class IntervalOrar {
     int oraStart, oraFinal;
 public:
-    IntervalOrar(int start = 0, int final = 0);
+    // Folosim explicit pentru a preveni conversiile implicite de la int la obiect
+    explicit IntervalOrar(int start = 0, int final = 0);
     int getStart() const;
     int getFinal() const;
     friend std::ostream& operator<<(std::ostream& os, const IntervalOrar& i);

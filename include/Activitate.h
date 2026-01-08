@@ -14,7 +14,7 @@ class Activitate {
     IntervalOrar interval;
 public:
     Activitate(std::string nume, double pret, IntervalOrar inter);
-    std::string getDenumire() const;
+    const std::string& getDenumire() const;
     double getPret() const;
     IntervalOrar getInterval() const;
     friend std::ostream& operator<<(std::ostream& os, const Activitate& a);
