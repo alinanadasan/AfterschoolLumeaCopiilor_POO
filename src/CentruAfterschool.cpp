@@ -532,7 +532,6 @@ void CentruAfterschool::inscrieCopilLaActivitate(const int idCopil, std::unique_
     }
     if (!gasit) throw EroareID();
 }
-
 void CentruAfterschool::afiseazaProgramCopil(const int idCopil) const {
     const Copil* c = nullptr;
     for (const auto& copil : listaCopii) {
@@ -650,5 +649,56 @@ void CentruAfterschool::genereazaRaportCopii() const {
     std::cout << "====================================================================================================\n";
     std::cout << "TOTAL ESTIMAT INCASARI CENTRU: " << std::fixed << std::setprecision(2) << totalCentru << " RON\n";
     std::cout << "====================================================================================================\n";
+}
+void CentruAfterschool::raportPopularitateActivitati() const {
+    std::cout << "\n--- GRAD DE OCUPARE ACTIVITATI ---\n";
+    std::cout << std::left << std::setw(25) << "Activitate" << "Nr. Elevi Inscriși\n";
+    std::cout << "------------------------------------------\n";
+
+    for (const auto& act : listaActivitati) {
+        int count = 0;
+        for (const auto& copil : listaCopii) {
+            for (const auto& a_copil : copil.getActivitati()) {
+                if (a_copil->getDenumire() == act->getDenumire()) {
+                    count++;
+                }
+            }
+        }
+        std::cout << std::left << std::setw(25) << act->getDenumire() << count << " elevi\n";
+    }
+}
+void CentruAfterschool::raportActivitatiLibere() const {
+    std::cout << "\n--- ACTIVITATI FARA NICIUN COPIL INSCRIȘ ---\n";
+    bool exista = false;
+
+    for (const auto& act : listaActivitati) {
+        int count = 0;
+        for (const auto& copil : listaCopii) {
+            for (const auto& a_copil : copil.getActivitati()) {
+                if (a_copil->getDenumire() == act->getDenumire()) count++;
+            }
+        }
+        if (count == 0) {
+            std::cout << " [!] " << act->getDenumire() << " (" << act->getInterval() << ")\n";
+            exista = true;
+        }
+    }
+    if (!exista) std::cout << "Toate activitatile au cel putin un elev.\n";
+}
+void CentruAfterschool::exportRaportFisier(const std::string& numeFisier) const {
+    std::ofstream g(numeFisier);
+    if (!g.is_open()) return;
+
+    g << "RAPORT LUNAR - " << this->numeCentru << "\n";
+    g << "==========================================\n\n";
+
+    for (const auto& c : listaCopii) {
+        g << c.getId() << ". " << c.getNume() << " " << c.getPrenume() << "\n";
+        g << "   Total de plata: " << c.calculTaxa(this->taxaBaza, this->pretMasaZilnic) << " RON\n";
+        g << "------------------------------------------\n";
+    }
+
+    g.close();
+    std::cout << "[SUCCESS] Raportul a fost salvat in " << numeFisier << "\n";
 }
 

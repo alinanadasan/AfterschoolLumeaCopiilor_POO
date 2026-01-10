@@ -5,8 +5,10 @@
 #include <limits>
 #include "ActivitateFactory.h"
 
+// Constructor
 InterfataUtilizator::InterfataUtilizator() : centru(CentruAfterschool::getInstance()) {}
 
+// Utilitare Input
 void InterfataUtilizator::curataInput() {
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -87,9 +89,7 @@ void InterfataUtilizator::modulModificaInfoCentru() {
                 case 1: {
                     std::cout << "\n[MODIFICARE NUME]";
                     std::cout << "\nIntrodu noul nume: ";
-
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
                     std::string numeNou = citesteInputText();
 
                     if (!numeNou.empty()) {
@@ -143,7 +143,6 @@ void InterfataUtilizator::modulModificaInfoCentru() {
             std::cout << "\nRaspunsul dvs: ";
 
             int raspuns = citesteInput();
-
             if (raspuns == 0) {
                 std::cout << "Salvare si revenire...\n";
                 return;
@@ -153,11 +152,9 @@ void InterfataUtilizator::modulModificaInfoCentru() {
 }
 
 void InterfataUtilizator::modulAdminCentru() {
-    int opt = -1;
     bool ramaneInSubmeniu = true;
 
-    while ( ramaneInSubmeniu ) {
-
+    while (ramaneInSubmeniu) {
         std::cout << "\n==============================================";
         std::cout << "\n       MODUL ADMIN CENTRU AFTERSCHOOL         ";
         std::cout << "\n==============================================";
@@ -167,7 +164,7 @@ void InterfataUtilizator::modulAdminCentru() {
         std::cout << "\n==============================================";
         std::cout << "\nOptiunea dvs: ";
 
-        opt = citesteInput();
+        int opt = citesteInput();
 
         if (opt == -1) continue;
 
@@ -186,7 +183,6 @@ void InterfataUtilizator::modulAdminCentru() {
                 logAction("Ai ales optiunea 2: Modifica informatii Afterschool");
                 modulModificaInfoCentru();
                 break;
-
             default:
                 std::cout << "!! Optiune inexistenta.\n";
         }
@@ -214,7 +210,6 @@ void InterfataUtilizator::modulModificaInfoCopil() {
         std::cout << "\n==============================================";
         std::cout << "\n    MODIFICA INFORMATII COPIL (ID: " << idCopil << ")";
         std::cout << "\n==============================================";
-
         std::cout << "\nSelectati ce doriti sa modificati:";
         std::cout << "\n1. Nume Copil";
         std::cout << "\n2. Prenume Copil";
@@ -238,9 +233,7 @@ void InterfataUtilizator::modulModificaInfoCopil() {
                 case 1: { // NUME
                     std::cout << "\n[MODIFICARE NUME COPIL]";
                     std::cout << "\nIntrodu noul nume: ";
-
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
                     std::string numeNou = citesteInputText();
 
                     if (!numeNou.empty()) {
@@ -254,7 +247,6 @@ void InterfataUtilizator::modulModificaInfoCopil() {
                 case 2: { // PRENUME
                     std::cout << "\n[MODIFICARE PRENUME COPIL]";
                     std::cout << "\nIntrodu noul prenume: ";
-
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     std::string prenumeNou = citesteInputText();
 
@@ -269,7 +261,6 @@ void InterfataUtilizator::modulModificaInfoCopil() {
                 case 3: { // CNP
                     std::cout << "\n[MODIFICARE CNP]";
                     std::cout << "\nIntrodu noul CNP: ";
-
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     std::string cnpNou = citesteInputText();
 
@@ -283,10 +274,6 @@ void InterfataUtilizator::modulModificaInfoCopil() {
                     std::cout << "\n[MODIFICARE CLASA]";
                     std::cout << "\nIntrodu noua clasa (0-8): ";
                     int clasaNoua = citesteInput();
-
-                    /*if (clasaNoua < 0 || clasaNoua > 8) {
-                        throw std::runtime_error("Clasa trebuie sa fie intre 0 si 8!");
-                    }*/
 
                     if (clasaNoua != -1) {
                         centru.modificaClasaCopil(idCopil, clasaNoua);
@@ -312,7 +299,6 @@ void InterfataUtilizator::modulModificaInfoCopil() {
             std::cout << "\nRaspunsul dvs: ";
 
             int raspuns = citesteInput();
-
             if (raspuns == 0) {
                 std::cout << "Salvare si revenire...\n";
                 return;
@@ -320,8 +306,8 @@ void InterfataUtilizator::modulModificaInfoCopil() {
         }
     }
 }
+
 void InterfataUtilizator::modulCopii()  {
-    int opt = -1;
     bool ramaneInSubmeniu = true;
 
     while ( ramaneInSubmeniu ) {
@@ -337,7 +323,7 @@ void InterfataUtilizator::modulCopii()  {
         std::cout << "\n==============================================";
         std::cout << "\nOptiunea dvs: ";
 
-        opt = citesteInput();
+        int opt = citesteInput();
 
         if (opt == -1) continue;
 
@@ -355,16 +341,12 @@ void InterfataUtilizator::modulCopii()  {
             case 2: {
                 logAction("Ai ales optiunea 2: Inregistrare manuala (cu CNP).");
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
                 std::cout << "Nume: ";
                 std::string n = citesteInputText();
-
                 std::cout << "Prenume: ";
                 std::string p = citesteInputText();
-
                 std::cout << "CNP: ";
                 std::string cnp = citesteInputText();
-
                 std::cout << "Clasa: ";
                 const int cl = citesteInput();
 
@@ -444,6 +426,7 @@ std::unique_ptr<Activitate> InterfataUtilizator::citesteSiCreeazaActivitate() {
 
     return nullptr;
 }
+
 void InterfataUtilizator::modulModificaActivitate() {
     centru.afiseazaListaActivitati();
     std::cout << "Introduceti Indexul activitatii pentru modificare: ";
@@ -495,8 +478,8 @@ void InterfataUtilizator::modulModificaActivitate() {
         std::cout << "[EROARE]: " << e.what() << "\n";
     }
 }
+
 void InterfataUtilizator::modulActivitati() {
-    int opt = -1;
     bool ramaneInSubmeniu = true;
 
     while (ramaneInSubmeniu) {
@@ -512,7 +495,7 @@ void InterfataUtilizator::modulActivitati() {
         std::cout << "\n==============================================";
         std::cout << "\nOptiunea dvs: ";
 
-        opt = citesteInput();
+        int opt = citesteInput();
 
         if (opt == -1) continue;
         if (opt == 0) {
@@ -526,7 +509,6 @@ void InterfataUtilizator::modulActivitati() {
                 logAction("Afisare lista activitati disponibile.");
                 centru.afiseazaListaActivitati();
                 break;
-
             case 2: {
                 logAction("Adaugare manuala activitate.");
                 try {
@@ -546,13 +528,11 @@ void InterfataUtilizator::modulActivitati() {
                 logAction("Import activitati din activitati.txt.");
                 centru.incarcaActivitatiDinFisier("activitati.txt");
                 break;
-
             case 4: {
                 logAction("Modificare activitate din lista actvitati folosind ID.");
                 modulModificaActivitate();
                 break;
             }
-
             case 5: {
                 logAction("Stergere activitate din lista.");
                 centru.afiseazaListaActivitati();
@@ -565,7 +545,6 @@ void InterfataUtilizator::modulActivitati() {
                 }
                 break;
             }
-
             default:
                 std::cout << "!! Optiune inexistenta.\n";
         }
@@ -604,6 +583,7 @@ void InterfataUtilizator::modulAdaugaInstructor() {
         std::cout << "[EROARE]: " << e.what() << "\n";
     }
 }
+
 void InterfataUtilizator::modulModificaSalariu() {
     centru.afiseazaSituatieEchipa();
     std::cout << "Introduceti Indexul instructorului: ";
@@ -622,6 +602,7 @@ void InterfataUtilizator::modulModificaSalariu() {
         std::cout << "!! Suma invalida.\n";
     }
 }
+
 void InterfataUtilizator::modulStergeInstructor() {
     centru.afiseazaSituatieEchipa();
     std::cout << "Introduceti Indexul instructorului pentru stergere: ";
@@ -634,8 +615,8 @@ void InterfataUtilizator::modulStergeInstructor() {
         std::cout << "[EROARE]: " << e.what() << "\n";
     }
 }
+
 void InterfataUtilizator::modulEchipa() {
-    int opt = -1;
     bool ramaneInSubmeniu = true;
 
     while (ramaneInSubmeniu) {
@@ -651,7 +632,7 @@ void InterfataUtilizator::modulEchipa() {
         std::cout << "\n==============================================";
         std::cout << "\nOptiunea dvs: ";
 
-        opt = citesteInput();
+        int opt = citesteInput();
 
         if (opt == -1) continue;
         if (opt == 0) {
@@ -691,8 +672,7 @@ void InterfataUtilizator::modulEchipa() {
 // MODUL INSCRIERI
 // -----------------------------------------------------------
 void InterfataUtilizator::modulInscrieri() {
-    int opt = -1;
-    const bool ramaneInSubmeniu = true;
+    bool ramaneInSubmeniu = true;
 
     while (ramaneInSubmeniu) {
         std::cout << "\n==============================================";
@@ -705,7 +685,7 @@ void InterfataUtilizator::modulInscrieri() {
         std::cout << "\n==============================================";
         std::cout << "\nOptiunea dvs: ";
 
-        opt = citesteInput();
+        int opt = citesteInput();
         if (opt == -1) continue;
         if (opt == 0) return;
 
@@ -728,7 +708,6 @@ void InterfataUtilizator::modulInscrieri() {
                 }
                 break;
             }
-
             case 2: {
                 logAction("Inscriere manuala la activitate noua.");
                 centru.genereazaRaportCopii();
@@ -745,7 +724,6 @@ void InterfataUtilizator::modulInscrieri() {
                 }
                 break;
             }
-
             case 3: {
                 logAction("Vizualizare program detaliat.");
                 std::cout << "ID Copil: ";
@@ -757,68 +735,8 @@ void InterfataUtilizator::modulInscrieri() {
                 }
                 break;
             }
-
             default:
                 std::cout << "!! Optiune inexistenta.\n";
-        }
-    }
-}
-
-// -----------------------------------------------------------
-// MODUL ADMIN
-// -----------------------------------------------------------
-void InterfataUtilizator::modulAdmin() {
-    int opt = -1;
-    bool ramaneInSubmeniu = true;
-
-    while (ramaneInSubmeniu) {
-        std::cout << "\n==============================================";
-        std::cout << "\n             MODUL ADMIN     ";
-        std::cout << "\n==============================================";
-        std::cout << "\n1. Modul Admin Centru Afterschool";
-        std::cout << "\n2. Modul Admin Copii";
-        std::cout << "\n3. Modul Admin Activitati";
-        std::cout << "\n4. Modul Admin Echipa(Instructori/Salarii)";
-        std::cout << "\n0. Inapoi la meniul principal";
-        std::cout << "\n==============================================";
-        std::cout << "\nOptiunea dvs: ";
-
-        opt = citesteInput();
-
-        if (opt == -1) continue;
-
-        if (opt == 0) {
-            ramaneInSubmeniu = false;
-            continue;
-        }
-
-        switch (opt) {
-            case 1: // Modul Admin Centru
-                logAction("Ai ales optiunea 1: Modul Admin Centru Afterschool");
-                modulAdminCentru();
-                continue;
-
-            case 2: { // Modul Admin Copii
-                logAction("Ai ales optiunea 2: Modul Admin Copii");
-                modulCopii();
-                continue;
-            }
-
-            case 3: { // Modul Admin Activitati
-                logAction("Ai ales optiunea 3: Modul Admin Activitati");
-                modulActivitati();
-                continue;
-            }
-
-            case 4: { // Modul Admin Echipa
-                logAction("Ai ales optiunea 4: Modul Admin Echipa(Instructori/Salarii)");
-                modulEchipa();
-                continue;
-            }
-
-            default:
-                std::cout << "!! Optiune inexistenta.\n";
-                continue;
         }
     }
 }
@@ -826,61 +744,8 @@ void InterfataUtilizator::modulAdmin() {
 // -----------------------------------------------------------
 // MODUL RAPOARTE
 // -----------------------------------------------------------
-void CentruAfterschool::raportPopularitateActivitati() const {
-    std::cout << "\n--- GRAD DE OCUPARE ACTIVITATI ---\n";
-    std::cout << std::left << std::setw(25) << "Activitate" << "Nr. Elevi Inscriși\n";
-    std::cout << "------------------------------------------\n";
-
-    for (const auto& act : listaActivitati) {
-        int count = 0;
-        for (const auto& copil : listaCopii) {
-            for (const auto& a_copil : copil.getActivitati()) {
-                if (a_copil->getDenumire() == act->getDenumire()) {
-                    count++;
-                }
-            }
-        }
-        std::cout << std::left << std::setw(25) << act->getDenumire() << count << " elevi\n";
-    }
-}
-void CentruAfterschool::raportActivitatiLibere() const {
-    std::cout << "\n--- ACTIVITATI FARA NICIUN COPIL INSCRIȘ ---\n";
-    bool exista = false;
-
-    for (const auto& act : listaActivitati) {
-        int count = 0;
-        for (const auto& copil : listaCopii) {
-            for (const auto& a_copil : copil.getActivitati()) {
-                if (a_copil->getDenumire() == act->getDenumire()) count++;
-            }
-        }
-        if (count == 0) {
-            std::cout << " [!] " << act->getDenumire() << " (" << act->getInterval() << ")\n";
-            exista = true;
-        }
-    }
-    if (!exista) std::cout << "Toate activitatile au cel putin un elev.\n";
-}
-void CentruAfterschool::exportRaportFisier(const std::string& numeFisier) const {
-    std::ofstream g(numeFisier);
-    if (!g.is_open()) return;
-
-    g << "RAPORT LUNAR - " << this->numeCentru << "\n";
-    g << "==========================================\n\n";
-
-    for (const auto& c : listaCopii) {
-        g << c.getId() << ". " << c.getNume() << " " << c.getPrenume() << "\n";
-        g << "   Total de plata: " << c.calculTaxa(this->taxaBaza, this->pretMasaZilnic) << " RON\n";
-        g << "------------------------------------------\n";
-    }
-
-    g.close();
-    std::cout << "[SUCCESS] Raportul a fost salvat in " << numeFisier << "\n";
-}
-
 void InterfataUtilizator::modulRapoarte() {
-    int opt = -1;
-    const bool ramaneInSubmeniu = true;
+    bool ramaneInSubmeniu = true;
 
     while (ramaneInSubmeniu) {
         std::cout << "\n==============================================";
@@ -895,7 +760,7 @@ void InterfataUtilizator::modulRapoarte() {
         std::cout << "\n==============================================";
         std::cout << "\nOptiunea dvs: ";
 
-        opt = citesteInput();
+        int opt = citesteInput();
         if (opt == -1) continue;
         if (opt == 0) return;
 
@@ -925,6 +790,58 @@ void InterfataUtilizator::modulRapoarte() {
         }
     }
 }
+
+// -----------------------------------------------------------
+// MODUL ADMIN
+// -----------------------------------------------------------
+void InterfataUtilizator::modulAdmin() {
+    bool ramaneInSubmeniu = true;
+
+    while (ramaneInSubmeniu) {
+        std::cout << "\n==============================================";
+        std::cout << "\n             MODUL ADMIN     ";
+        std::cout << "\n==============================================";
+        std::cout << "\n1. Modul Admin Centru Afterschool";
+        std::cout << "\n2. Modul Admin Copii";
+        std::cout << "\n3. Modul Admin Activitati";
+        std::cout << "\n4. Modul Admin Echipa(Instructori/Salarii)";
+        std::cout << "\n0. Inapoi la meniul principal";
+        std::cout << "\n==============================================";
+        std::cout << "\nOptiunea dvs: ";
+
+        int opt = citesteInput();
+
+        if (opt == -1) continue;
+
+        if (opt == 0) {
+            ramaneInSubmeniu = false;
+            continue;
+        }
+
+        switch (opt) {
+            case 1:
+                logAction("Ai ales optiunea 1: Modul Admin Centru Afterschool");
+                modulAdminCentru();
+                continue;
+            case 2:
+                logAction("Ai ales optiunea 2: Modul Admin Copii");
+                modulCopii();
+                continue;
+            case 3:
+                logAction("Ai ales optiunea 3: Modul Admin Activitati");
+                modulActivitati();
+                continue;
+            case 4:
+                logAction("Ai ales optiunea 4: Modul Admin Echipa(Instructori/Salarii)");
+                modulEchipa();
+                continue;
+            default:
+                std::cout << "!! Optiune inexistenta.\n";
+                continue;
+        }
+    }
+}
+
 // Sesiune Utilizator
 void InterfataUtilizator::salveazaIstoric() const {
     std::ofstream fisier("tastatura.txt");
@@ -933,7 +850,6 @@ void InterfataUtilizator::salveazaIstoric() const {
         for (const auto& opt : istoricOptiuni) {
             fisier << opt << "\n";
         }
-
         fisier.close();
         std::cout << "[INFO] Istoricul actiunilor a fost salvat in 'tastatura.txt'.\n";
     } else {
@@ -942,14 +858,12 @@ void InterfataUtilizator::salveazaIstoric() const {
 }
 
 void InterfataUtilizator::pornesteAplicatia() {
-    int optiune = -1;
-
     istoricOptiuni.clear();
 
     while (true) {
         afiseazaMeniuPrincipal();
 
-        optiune = citesteInput();
+        int optiune = citesteInput();
 
         if (optiune == -1) continue;
 
