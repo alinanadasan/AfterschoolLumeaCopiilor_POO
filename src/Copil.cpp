@@ -413,14 +413,28 @@ void Copil::extrageDataNastereDinCNP() {
     if (cnp == "LIPSA" || cnp.length() < 13) return;
 
     const int s = cnp[0] - '0';
+
     const int zi = std::stoi(cnp.substr(5, 2));
     const int luna = std::stoi(cnp.substr(3,2));
     const int an = std::stoi(cnp.substr(1,2));
+
     if (s != 5 && s != 6) {
-          throw EroareCNP("CNP-ul nu corespunde unei persoane nascute dupa anul 2000!");
+        throw EroareCNP("CNP-ul nu corespunde unei persoane nascute dupa anul 2000!");
     }
-    const int anNastere = 2000 + an;
-    dataNasterii = std::chrono::year(anNastere) / std::chrono::month(luna) / std::chrono::day(zi);
+
+    const int anComplet = 2000 + an;
+
+    std::stringstream ss;
+
+    if (zi < 10) ss << "0";
+    ss << zi << ".";
+
+    if (luna < 10) ss << "0";
+    ss << luna << ".";
+
+    ss << anComplet;
+
+    this->dataNasterii = this->stringToChrono(ss.str());
 }
 
 void Copil::calculeazaVarsta() {
