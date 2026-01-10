@@ -5,10 +5,8 @@
 #include <limits>
 #include "ActivitateFactory.h"
 
-// Constructor
 InterfataUtilizator::InterfataUtilizator() : centru(CentruAfterschool::getInstance()) {}
 
-// Utilitare Input
 void InterfataUtilizator::curataInput() {
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -687,7 +685,12 @@ void InterfataUtilizator::modulInscrieri() {
 
         int opt = citesteInput();
         if (opt == -1) continue;
-        if (opt == 0) return;
+
+        if (opt == 0) {
+            ramaneInSubmeniu = false;
+            std::cout << "Revenire la Meniul Principal...\n";
+            continue;
+        }
 
         switch (opt) {
             case 1: {
@@ -762,7 +765,13 @@ void InterfataUtilizator::modulRapoarte() {
 
         int opt = citesteInput();
         if (opt == -1) continue;
-        if (opt == 0) return;
+
+
+        if (opt == 0) {
+            ramaneInSubmeniu = false;
+            std::cout << "Revenire la Meniul Principal...\n";
+            continue;
+        }
 
         switch (opt) {
             case 1:
@@ -815,6 +824,7 @@ void InterfataUtilizator::modulAdmin() {
 
         if (opt == 0) {
             ramaneInSubmeniu = false;
+			std::cout << "Revenire la Meniul Principal...\n";
             continue;
         }
 
