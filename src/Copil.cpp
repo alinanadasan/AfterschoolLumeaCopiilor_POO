@@ -30,11 +30,6 @@ Copil::Copil(const std::string& nume, const std::string& prenume, const std::str
         this->extrageDataNastereDinCNP();
         this->calculeazaVarsta();
 
-        if (this->dataNasterii.ok()) {
-            const std::string dataStr = this->getDataNasterii();
-            [[maybe_unused]] auto ck = stringToChrono(dataStr);
-        }
-
         if (varsta < 6 || varsta > 15) throw EroareVarsta();
         if (clasaScoala < 0 || clasaScoala > 8) throw EroareClasa();
 
@@ -231,7 +226,7 @@ std::istream& operator>>(std::istream& is, Copil& c) {
         std::cout << "Clasa (0-8): ";
 
         if (is >> clasaIntrodusa) {
-            if (clasaIntrodusa >= 0 && clasaIntrodusa <= 12) {
+            if (clasaIntrodusa >= 0 && clasaIntrodusa <= 8) {
                 c.clasaScoala = clasaIntrodusa;
                 clasaValida = true;
             } else {

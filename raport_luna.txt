@@ -1,45 +1,21 @@
 RAPORT LUNAR - Lumea Copiilor
 ==========================================
 
-10. Micu Alex
-   Total de plata: 600 RON
-------------------------------------------
-7. Preda Sofia
+3. Micu Alex
    Total de plata: 400 RON
 ------------------------------------------
-2. Stan Mihai
+6. Nistor Paul
    Total de plata: 400 RON
 ------------------------------------------
-9. Manole David
+1. Oprea George
    Total de plata: 400 RON
 ------------------------------------------
-8. Dobre Luca
+2. Costin Vlad
    Total de plata: 400 RON
 ------------------------------------------
-14. Nistor Paul
+4. Rus Ana
    Total de plata: 400 RON
 ------------------------------------------
-3. Radu Elena
-   Total de plata: 400 RON
-------------------------------------------
-4. Oprea George
-   Total de plata: 400 RON
-------------------------------------------
-5. Matei Ioana
+5. Voicu Larisa
    Total de plata: 784.5 RON
-------------------------------------------
-6. Costin Vlad
-   Total de plata: 400 RON
-------------------------------------------
-11. Rus Ana
-   Total de plata: 400 RON
-------------------------------------------
-1. Dumitru Andrei
-   Total de plata: 400 RON
-------------------------------------------
-12. Stefan Voda
-   Total de plata: 400 RON
-------------------------------------------
-13. Voicu Larisa
-   Total de plata: 600 RON
 ------------------------------------------
