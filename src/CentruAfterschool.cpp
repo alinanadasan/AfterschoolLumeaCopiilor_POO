@@ -68,12 +68,16 @@ void CentruAfterschool::setNumeCentru(const std::string& nume) {
 void CentruAfterschool::setTaxaBaza(double taxa) {
     if(taxa < 0) throw EroareAfterschool("Taxa nu poate fi negativa!");
     this->taxaBaza = taxa;
-    std::cout << "[INFO] Taxa de baza a fost actualizata: " << this->taxaBaza << " RON\n";
+    std::cout << "[INFO] Taxa de baza a fost actualizata: "
+    << std::fixed << std::setprecision(2) << this->taxaBaza << " RON\n";
+    std::cout.unsetf(std::ios_base::floatfield);
 }
 void CentruAfterschool::setPretMasaZilnic(double pret) {
     if(pret < 0) throw EroareAfterschool("Pretul nu poate fi negativ!");
     this->pretMasaZilnic = pret;
-    std::cout << "[INFO] Pretul mesei a fost actualizat: " << this->pretMasaZilnic << " RON\n";
+    std::cout << "[INFO] Pretul mesei a fost actualizat: "
+    << std::fixed << std::setprecision(2) << this->pretMasaZilnic << " RON\n";
+    std::cout.unsetf(std::ios_base::floatfield);
 }
 
 
