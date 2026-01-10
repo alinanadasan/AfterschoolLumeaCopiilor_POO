@@ -27,23 +27,25 @@ Copil::Copil(const std::string& nume, const std::string& prenume, const std::str
     this->zilePrezente = 0;
 
     try {
-        if (this->dataNasterii.ok()) {
-            std::string dataStr = this->getDataNasterii();
-            stringToChrono(dataStr);
-        }
         this->extrageDataNastereDinCNP();
         this->calculeazaVarsta();
 
-        if (varsta < 6 || varsta > 15) {
-            throw EroareVarsta();
-        }
-        if (clasaScoala < 0 || clasaScoala > 8) {
-            throw EroareClasa();
+        if (this->dataNasterii.ok()) {
+            const std::string dataStr = this->getDataNasterii();
+            [[maybe_unused]] auto ck = stringToChrono(dataStr);
         }
 
-        istoricPlati = new double[1]{0.0};
+        if (varsta < 6 || varsta > 15) throw EroareVarsta();
+        if (clasaScoala < 0 || clasaScoala > 8) throw EroareClasa();
+
+        this->nrLuni = 1;
+        this->istoricPlati = new double[1];
+        this->istoricPlati[0] = 0.0;
 
     } catch (...) {
+        if (this->istoricPlati != nullptr) {
+            delete[] this->istoricPlati;
+        }
         nrCopii--;
         throw;
     }
@@ -56,25 +58,27 @@ Copil::Copil(const std::string& nume, const std::string& prenume, const int clas
     this->prenume = prenume;
     this->clasaScoala = clasaScoala;
     this->varsta = varsta;
+    this->cnp = "LIPSA";
+    this->dataNasterii = std::chrono::year_month_day{};
+    this->zilePrezente = 0;
 
-    // Verificare Varsta
+    this->nrLuni = 1;
+    this->istoricPlati = new double[1];
+    this->istoricPlati[0] = 0.0;
+
     if (this->varsta < 6 || this->varsta > 15) {
+        delete[] this->istoricPlati;
         nrCopii--;
         throw EroareVarsta();
     }
 
-    // Verificare Clasa
     if (clasaScoala < 0 || clasaScoala > 8) {
+        delete[] this->istoricPlati;
         nrCopii--;
         throw EroareClasa();
     }
-
-    this->cnp = "LIPSA";
-    this->dataNasterii = std::chrono::year_month_day{};
-    this->nrLuni = 1;
-    this->istoricPlati = new double[1]{0.0};
-    this->zilePrezente = 0;
 }
+
 // Constructor de copiere
 Copil::Copil(const Copil& alt_copil) {
 
@@ -85,16 +89,17 @@ Copil::Copil(const Copil& alt_copil) {
     this->varsta = alt_copil.varsta;
     this->cnp = alt_copil.cnp;
     this->dataNasterii = alt_copil.dataNasterii;
-    this->nrLuni = alt_copil.nrLuni;
     this->zilePrezente = alt_copil.zilePrezente;
+    this->nrLuni = alt_copil.nrLuni;
 
-    if (alt_copil.istoricPlati != nullptr && alt_copil.nrLuni > 0) {
+    if (alt_copil.nrLuni > 0 && alt_copil.istoricPlati != nullptr) {
         this->istoricPlati = new double[this->nrLuni];
         for (int i = 0; i < this->nrLuni; ++i) {
             this->istoricPlati[i] = alt_copil.istoricPlati[i];
         }
     } else {
         this->istoricPlati = nullptr;
+        this->nrLuni = 0;
     }
 
     this->activitati.clear();
@@ -118,21 +123,23 @@ Copil::~Copil() {
 
 //operator de asignare
 Copil& Copil::operator=(const Copil& alt_copil) {
-    if (this == &alt_copil) {
-        return *this;
-    }
 
+    if (this == &alt_copil) return *this;
+    //Aloc memorie noua temporar
     double* tempPlati = nullptr;
-    if (alt_copil.istoricPlati != nullptr && alt_copil.nrLuni > 0) {
+    if (alt_copil.nrLuni > 0 && alt_copil.istoricPlati != nullptr) {
         tempPlati = new double[alt_copil.nrLuni];
         for (int i = 0; i < alt_copil.nrLuni; ++i) {
             tempPlati[i] = alt_copil.istoricPlati[i];
         }
     }
 
-    delete[] this->istoricPlati;
-    this->activitati.clear();
+    //Sterg memoria veche
+    if (this->istoricPlati != nullptr) {
+        delete[] this->istoricPlati;
+    }
 
+    //Copiez restul datelor
     this->id = alt_copil.id;
     this->nume = alt_copil.nume;
     this->prenume = alt_copil.prenume;
@@ -140,21 +147,21 @@ Copil& Copil::operator=(const Copil& alt_copil) {
     this->varsta = alt_copil.varsta;
     this->cnp = alt_copil.cnp;
     this->dataNasterii = alt_copil.dataNasterii;
-    this->nrLuni = alt_copil.nrLuni;
     this->zilePrezente = alt_copil.zilePrezente;
 
+    this->nrLuni = alt_copil.nrLuni;
     this->istoricPlati = tempPlati;
 
+    //Copiez activitatile
+    this->activitati.clear();
     for (const auto & i : alt_copil.activitati) {
-        if (i != nullptr) {
-            this->activitati.push_back(i->clone());
-        }
-    }
 
+        if (i != nullptr) this->activitati.push_back(i->clone());
+
+    }
     return *this;
 }
 
-//operator afisare
 //operator afisare
 std::ostream& operator<<(std::ostream& os, const Copil& c) {
     os << "=========== DETALII ELEV (ID: " << c.id << ") ===========\n";
@@ -252,8 +259,10 @@ std::istream& operator>>(std::istream& is, Copil& c) {
 
 //operator +=
 Copil& Copil::operator+=(const double plata) {
+    // Alocam array nou mai mare
     double* temp = new double[this->nrLuni + 1];
 
+    // Copiem datele vechi
     if (this->istoricPlati != nullptr) {
         for (int i = 0; i < this->nrLuni; ++i) {
             temp[i] = this->istoricPlati[i];
@@ -261,8 +270,10 @@ Copil& Copil::operator+=(const double plata) {
         delete[] this->istoricPlati;
     }
 
+    // Adaugam elementul nou
     temp[this->nrLuni] = plata;
 
+    // Actualizam pointerul si dimensiunea
     this->istoricPlati = temp;
     this->nrLuni++;
 
