@@ -358,10 +358,9 @@ void CentruAfterschool::incarcaActivitatiDinFisier(const std::string& numeFisier
                     std::cout << "[INFO Import]: Linia " << indexLinie << " - Inserat " << tip_str
                               << " | " << denumire << " | Pret: " << pret << " RON\n";
                 }
-
             } catch (const std::exception& e) {
                 std::cout << "[EROARE Import]: Linia " << indexLinie << " - " << denumire << " RESPINS.\n"
-                          << "                 Motiv: Date invalide sau format gresit.\n";
+                          << "                 Motiv: " << e.what() << "\n";
             }
         }
     }
@@ -451,7 +450,7 @@ void CentruAfterschool::incarcaInstructoriDinFisier(const std::string& numeFisie
 
             } catch (const std::exception& e) {
                 std::cout << "[EROARE Import]: Linia " << indexLinie << " - " << nume << " RESPINS.\n"
-                          << "                 Motiv: Date financiare invalide.\n";
+                          << "                 Motiv: " << e.what() << "\n";
             }
             }
     }
