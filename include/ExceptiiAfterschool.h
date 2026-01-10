@@ -1,33 +1,57 @@
-//
 // Created by Alina on 08/01/2026.
 //
 
 #ifndef OOP_EXCEPTIIAFTERSCHOOL_H
 #define OOP_EXCEPTIIAFTERSCHOOL_H
+
 #include <exception>
 #include <string>
+#include <utility>
 
 class EroareAfterschool : public std::exception {
 protected:
     std::string mesaj;
+
 public:
-    explicit EroareAfterschool(std::string m) : mesaj(std::move(m)) {}
-    const char* what() const noexcept override { return mesaj.c_str(); }
+    explicit EroareAfterschool(std::string m) {
+        this->mesaj = std::move(m);
+    }
+
+    const char* what() const noexcept override {
+        return this->mesaj.c_str();
+    }
 };
 
-class EroareVarsta : public EroareAfterschool {
+
+class EroareVarsta final : public EroareAfterschool {
 public:
-    explicit EroareVarsta() : EroareAfterschool("Eroare: Varsta trebuie sa fie intre 5 si 18 ani!") {}
+    explicit EroareVarsta()
+        : EroareAfterschool("Eroare: Varsta trebuie sa fie intre 6 si 15 ani!") {
+    }
 };
 
-class EroareIndex : public EroareAfterschool {
+class EroareID final : public EroareAfterschool {
 public:
-    explicit EroareIndex() : EroareAfterschool("Eroare: Indexul introdus este invalid!") {}
+    explicit EroareID()
+        : EroareAfterschool("Eroare: Indexul introdus este invalid!") {
+    }
 };
 
-class EroareConflictOrar : public EroareAfterschool {
+class EroareConflictOrar final : public EroareAfterschool {
 public:
-    explicit EroareConflictOrar(const std::string& nume)
-        : EroareAfterschool("Conflict detectat pentru activitatea: " + nume) {}
+    explicit EroareConflictOrar(const std::string& numeActivitate)
+        : EroareAfterschool("Conflict orar detectat pentru activitatea: " + numeActivitate) {
+    }
 };
+
+class EroareClasa final : public EroareAfterschool {
+public:
+    EroareClasa() : EroareAfterschool("Clasa trebuie sa fie intre 0 si 8!") {}
+};
+
+class EroareCNP final : public EroareAfterschool {
+public:
+    explicit EroareCNP(const std::string& msg) : EroareAfterschool("CNP Invalid: " + msg) {}
+};
+
 #endif //OOP_EXCEPTIIAFTERSCHOOL_H

@@ -10,29 +10,74 @@
 #include <string>
 #include <iostream>
 #include "Activitate.h"
+#include <chrono>
 
 class Copil {
-    std::string nume;
-    int varsta;
-    std::vector<std::unique_ptr<Activitate>> activitati;
 
-    // FIX MSAN: Initializare implicita pentru a evita garbage value la constructie esuata
+    static int nrCopii;
+    //info copil
+    int id;
+    std::string nume;
+    std::string prenume;
+    std::string cnp;
+    int clasaScoala;
+    std::chrono::year_month_day dataNasterii{};
+    int varsta;
+    int zilePrezente;
+
+    std::vector<std::unique_ptr<Activitate>> activitati;
     double* istoricPlati = nullptr;
     int nrLuni = 0;
 
-public:
-    Copil(std::string nume, int varsta);
-    Copil(const Copil& altul);
-    Copil& operator=(Copil altul); // Copy-and-swap
-    ~Copil();
-    friend void swap(Copil& primu, Copil& aldoilea) noexcept;
+    //helpers
+    void extrageDataNastereDinCNP();
+    static std::chrono::year_month_day stringToChrono(const std::string& dataNasteriiStr) ;
+    void calculeazaVarsta();
 
-    void adaugaActivitate(std::unique_ptr<Activitate> a);
-    bool areConflictOrar(const Activitate& noua) const;
-    double calculTaxa(double taxaBaza) const;
-    const std::string& getNume() const { return nume; }
-    const std::vector<std::unique_ptr<Activitate>>& getActivitati() const { return activitati; }
+public:
+    //constructor de initializare: e nevoie de nume, prenume, cnp si clasaScoala
+    Copil(const std::string &nume, const std::string &prenume, const std::string &cnp, int clasaScoala);
+    //Constructor supraincarcat, avem nevoie doar de nume, prenume, clasa, varsta, restul default
+    Copil(const std::string &nume, const std::string &prenume, int clasaScoala, int varsta);
+    //constructor de copiere
+    Copil(const Copil& alt_copil);
+
+    //destructor
+    ~Copil();
+
+    //Operatori
+    //operator de asignare
+    Copil &operator=(const Copil &alt_copil);
+
+    //operator de citire/afisare
     friend std::ostream& operator<<(std::ostream& os, const Copil& c);
+    friend std::istream& operator>>(std::istream& is, Copil& c);
+    Copil& operator+=(double plata);
+    friend bool operator<(const Copil& c1, const Copil& c2);
+
+    //metode de logica
+    [[nodiscard]] bool areConflictOrar(const Activitate& activitate_noua) const;
+    void adaugaActivitate(std::unique_ptr<Activitate> a);
+    [[nodiscard]] double calculTaxa(double taxaAdmin, double pretMasaZi) const;
+
+    // Getters
+    int getId() const;
+    const std::string& getNume() const;
+    const std::string& getPrenume() const;
+    int getClasa() const;
+    int getVarsta() const;
+    std::string getDataNasterii() const;
+    const std::string &getCNP() const;
+
+    int getZilePrezente() const;
+    const std::vector<std::unique_ptr<Activitate>>& getActivitati() const;
+
+    void setNume(const std::string &n);
+    void setPrenume(const std::string &p);
+    void setCNP(const std::string &cnpNou);
+    void setClasa(int c);
+
+
 };
 
 #endif //OOP_COPIL_H

@@ -1,21 +1,30 @@
 //
 // Created by Alina on 08/01/2026.
 //
-#include "ActivitateEducationala.h"
 
-ActivitateEducationala::ActivitateEducationala(std::string n, double p, IntervalOrar i, int m)
-    : Activitate(std::move(n), p, i), nrMaterialeCurs(m) {}
+#include "ActivitateEducationala.h"
+#include <iostream>
+
+ActivitateEducationala::ActivitateEducationala(std::string nume, double pret, IntervalOrar interv, bool simulare)
+    : Activitate(std::move(nume), pret, interv,"") {
+    this->esteSimulare = simulare;
+    std::cout << ">> [LOG] Activitate EDU configurata: " << this->getDenumire() << "\n";
+}
 
 double ActivitateEducationala::getPretCalculat() const {
-    // Educația oferă o reducere de 5% la prețul de bază, dar adaugă 15 RON per manual/curs
-    return (pretExtra * 0.95) + (nrMaterialeCurs * 15.0);
+    //adaugam 100 ron la pretul de baza
+    return this->pretExtra + (this->esteSimulare ? 100.0 : 0.0);
 }
 
 std::unique_ptr<Activitate> ActivitateEducationala::clone() const {
     return std::make_unique<ActivitateEducationala>(*this);
 }
 
+bool ActivitateEducationala::getEsteSimulare() const {
+    return this->esteSimulare;
+}
+
 void ActivitateEducationala::print(std::ostream& os) const {
     Activitate::print(os);
-    os << " [Tip: EDU | Materiale: " << nrMaterialeCurs << "]";
+    os << " [Tip: EDU | " << (this->esteSimulare ? "SIMULARE" : "CURS") << "]";
 }

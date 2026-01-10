@@ -1,0 +1,14 @@
+Ion Popescu|Fotbal|150.00
+Maria Ionescu|Pictura|120.50
+Dan Munteanu|Sah|100.00
+Elena Voicu|Meditatii Engleza|90.00
+Robert Negoita|Inot|130.00
+Ion Tiriac|Tenis|500.00
+Simona Halep|Tenis|450.00
+Ilie Nastase|Tenis|400.00
+Andrei Pavel|Tenis|300.00
+Nicolae Grigorescu|Pictura|250.00
+Adrian Ghenie|Pictura|350.00
+George Enescu|Vioara|300.00
+Gheorghe Zamfir|Nai|280.00
+Mircea Eliade|Scriere Creativa|200.00
