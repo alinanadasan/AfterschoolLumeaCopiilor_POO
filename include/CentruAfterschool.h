@@ -67,8 +67,6 @@ public:
     void afiseazaSituatieEchipa() const;
     void modificaSalariuInGrila(int index, double sumaNoua);
     void stergeInstructorDinEchipa(int index);
-    RegistruInstructori<std::string> &getEchipaDidactica();
-    RegistruInstructori<double> &getGrilaSalarizare();
 
     void inscrieCopilLaActivitate(int idCopil, std::unique_ptr<Activitate> a);
     void afiseazaProgramCopil(int idCopil) const;

@@ -51,23 +51,4 @@ public:
         return this->denumire;
     }
 };
-
-template <typename T>
-void afiseazaRegistru(const RegistruInstructori<T>& registru) {
-    std::cout << "\n=====================================";
-    std::cout << "\n--- REGISTRU: " << registru.getDepartament() << " ---";
-    std::cout << "\n=====================================\n";
-
-    const auto& lista = registru.getInregistrari();
-
-    if (lista.empty()) {
-        std::cout << " [!] Momentan nu exista date inregistrate.\n";
-    } else {
-        for (size_t i = 0; i < lista.size(); ++i) {
-            std::cout << " [" << i << "] " << lista[i] << "\n";
-        }
-    }
-    std::cout << "-------------------------------------\n";
-}
-
 #endif //OOP_REGISTRUINSTRUCTORI_H

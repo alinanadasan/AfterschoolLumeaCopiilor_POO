@@ -504,13 +504,6 @@ void CentruAfterschool::stergeInstructorDinEchipa(int index) {
     this->echipaDidactica.sterge(index);
     this->grilaSalarizare.sterge(index);
 }
-RegistruInstructori<std::string>& CentruAfterschool::getEchipaDidactica() {
-    return this->echipaDidactica;
-}
-RegistruInstructori<double>& CentruAfterschool::getGrilaSalarizare() {
-    return this->grilaSalarizare;
-}
-
 
 void CentruAfterschool::inscrieCopilLaActivitate(const int idCopil, std::unique_ptr<Activitate> a) {
     bool gasit = false;
@@ -636,7 +629,9 @@ void CentruAfterschool::genereazaRaportCopii() const {
                   << std::setw(20) << c.getPrenume();
 
         std::string cnpAfisat = c.getCNP();
-        if(cnpAfisat.length() > 13) cnpAfisat = cnpAfisat.substr(0, 13);
+        if(cnpAfisat.length() > 13) {
+            cnpAfisat.resize(13);
+        }
 
         std::cout << std::setw(15) << cnpAfisat
                   << std::setw(8)  << c.getVarsta()
