@@ -72,7 +72,6 @@ public:
     void afiseazaProgramCopil(int idCopil) const;
 
     //Metode STATISTICI
-    void genereazaRaport() const;
     void genereazaRaportCopii() const;
 };
 

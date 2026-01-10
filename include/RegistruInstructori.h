@@ -47,8 +47,5 @@ public:
     const std::vector<T>& getInregistrari() const {
         return this->inregistrari;
     }
-    const std::string& getDepartament() const {
-        return this->denumire;
-    }
 };
 #endif //OOP_REGISTRUINSTRUCTORI_H

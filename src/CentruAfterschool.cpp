@@ -568,33 +568,6 @@ void CentruAfterschool::afiseazaProgramCopil(const int idCopil) const {
 // ---------------------------------------------------------
 // METODE STATISTICI
 // ---------------------------------------------------------
-void CentruAfterschool::genereazaRaport() const {
-    double venitTotal = 0.0;
-    std::cout << "\n============================================\n";
-    std::cout << "   RAPORT FINANCIAR Afterschool: " << this->numeCentru << "\n";
-    std::cout << "============================================\n";
-
-    if (this->listaCopii.empty()) {
-        std::cout << "[INFO] Nu exista copii inscrisi in acest moment.\n";
-    } else {
-        std::cout << "[Tarife aplicate: Baza " << this->taxaBaza
-                  << " RON | Masa " << this->pretMasaZilnic << " RON/zi]\n";
-        std::cout << "--------------------------------------------\n";
-
-        for (const auto& c : this->listaCopii) {
-
-            const double taxaIndividuala = c.calculTaxa(this->taxaBaza, this->pretMasaZilnic);
-            std::cout << c;
-            std::cout << " -> TAXA CALCULATA: " << taxaIndividuala << " RON\n";
-            std::cout << "--------------------------------------------\n";
-
-            venitTotal += taxaIndividuala;
-        }
-    }
-
-    std::cout << " VENIT TOTAL ESTIMAT CENTRU: " << venitTotal << " RON\n";
-    std::cout << "============================================\n";
-}
 void CentruAfterschool::genereazaRaportCopii() const {
     if (listaCopii.empty()) {
         std::cout << "[INFO CentruAfterschool::genereazaRaportCopii] Nu exista copii inscrisi in centru.\n";

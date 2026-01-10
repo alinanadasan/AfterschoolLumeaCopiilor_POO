@@ -34,7 +34,6 @@ public:
     //getters
     const std::string& getDenumire() const;
     IntervalOrar getInterval() const;
-    std::string getInstructor() const;
 
     bool areInstructor() const;
     void setDenumire(const std::string &nume);

@@ -46,9 +46,6 @@ const std::string& Activitate::getDenumire() const {
 IntervalOrar Activitate::getInterval() const {
     return this->interval;
 }
-std::string Activitate::getInstructor() const {
-    return this->numeInstructor;
-}
 
 void Activitate::setInterval(const IntervalOrar& nou) {
     this->interval = nou;
