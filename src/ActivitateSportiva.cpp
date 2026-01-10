@@ -3,11 +3,11 @@
 //
 #include "ActivitateSportiva.h"
 
-ActivitateSportiva::ActivitateSportiva(std::string nume, const double pret, IntervalOrar interv, bool echip)
-: Activitate(std::move(nume), pret, interv,"") {
+ActivitateSportiva::ActivitateSportiva(std::string nume, double pret, IntervalOrar interv, bool echip)
+    : Activitate(std::move(nume), pret, interv, ""), necesitaEchipament(echip) {
 
-    this->necesitaEchipament = echip;
-    std::cout << ">> [LOG] Activitate sportiva creata: " << this->getDenumire() << "\n";
+    std::cout << ">> [LOG] Activitate Sportiva creata: " << this->getDenumire()
+              << " | Necesita echipament: " << (this->areEchipament() ? "DA" : "NU") << "\n";
 }
 
 double ActivitateSportiva::getPretCalculat() const {
@@ -26,7 +26,7 @@ bool ActivitateSportiva::areEchipament() const {
 }
 
 void ActivitateSportiva::print(std::ostream& os) const {
-
     Activitate::print(os);
-    os << " [Tip: SPORT | Echipament necesar: " << (this->necesitaEchipament ? "DA" : "NU") << "]";
+
+    os << " | Echipament special: " << (areEchipament() ? "Inclus/Necesar" : "Nu este cazul");
 }

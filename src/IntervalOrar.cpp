@@ -25,8 +25,7 @@ std::ostream& operator<<(std::ostream& os, const IntervalOrar& i) {
 }
 
 bool IntervalOrar::seSuprapune(const IntervalOrar& altul) const {
-    // Doua intervale [A, B] si [C, D] se suprapun daca A < D si C < B
-    return (this->oraStart < altul.oraFinal) && (altul.oraStart < this->oraFinal);
+    return (this->getStart() < altul.getFinal()) && (altul.getStart() < this->getFinal());
 }
 
 IntervalOrar IntervalOrar::decaleaza(int pauza) const {
