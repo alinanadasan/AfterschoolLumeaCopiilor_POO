@@ -27,6 +27,10 @@ Copil::Copil(const std::string& nume, const std::string& prenume, const std::str
     this->zilePrezente = 0;
 
     try {
+        if (this->dataNasterii.ok()) {
+            std::string dataStr = this->getDataNasterii();
+            stringToChrono(dataStr);
+        }
         this->extrageDataNastereDinCNP();
         this->calculeazaVarsta();
 
@@ -151,23 +155,15 @@ Copil& Copil::operator=(const Copil& alt_copil) {
 }
 
 //operator afisare
+//operator afisare
 std::ostream& operator<<(std::ostream& os, const Copil& c) {
     os << "=========== DETALII ELEV (ID: " << c.id << ") ===========\n";
     os << "Nume: " << c.nume << " " << c.prenume << "\n";
     os << "CNP: " << c.cnp << "\n";
     os << "Clasa: " << c.clasaScoala << " | Varsta: " << c.varsta << " ani\n";
-
     os << "Prezenta luna curenta: " << c.zilePrezente << " zile\n";
-
-    os << "Data Nasterii: ";
-    if (c.dataNasterii.ok()) {
-        os << static_cast<unsigned>(c.dataNasterii.day()) << "."
-           << static_cast<unsigned>(c.dataNasterii.month()) << "."
-           << static_cast<int>(c.dataNasterii.year());
-    } else {
-        os << "Necunoscuta / Invalida";
-    }
-    os << "\n";
+    os << "Data Nasterii: " << c.getDataNasterii() << "\n";
+    // ---------------------------------------------------------------------
 
     os << "Activitati inscrise (" << c.activitati.size() << "):\n";
     if (c.activitati.empty()) {
@@ -195,7 +191,6 @@ std::ostream& operator<<(std::ostream& os, const Copil& c) {
     os << "\n==============================================\n";
     return os;
 }
-
 //operator citire
 std::istream& operator>>(std::istream& is, Copil& c) {
     std::cout << "\n--- Introducere Date Elev ---\n";
